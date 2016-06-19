@@ -41,6 +41,9 @@ public class CashRegister {
 	 * @throws IllegalArgumentException if invalid denominations.
 	 */
 	public CashRegister(Collection<Integer> denominations) {
+		if (denominations == null || denominations.isEmpty()) {
+			throw new IllegalArgumentException("Denominations required.");
+		}
 		for (Integer denomination : denominations) {
 			if (denomination == null || denomination <= 0) {
 				throw new IllegalArgumentException("Denominations must be > 0.");
