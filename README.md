@@ -8,7 +8,8 @@ current balance, accept bills in, dispense bills out, and make change.
 The cash register can be operated by running Java with the main class, 
 CashRegisterCLI.
 
-Supported commands include:
+Type 'usage' to see available commands. Supported commands include:
+- usage - shows usage help.
 - quit - exits the program.
 
 ## Contributors
