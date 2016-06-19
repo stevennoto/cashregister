@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 public class CashRegisterCLI {
 	private final InputStream in;
 	private final PrintStream out;
+	private final CashRegister cashRegister;
 	
 	private final static String VALID_COMMAND_REGEX = "([a-zA-Z]+)";
 	
@@ -25,6 +26,7 @@ public class CashRegisterCLI {
 	public CashRegisterCLI(InputStream inStream, PrintStream outStream) {
 		in = inStream;
 		out = outStream;
+		cashRegister = new CashRegister();
 	}
 	
 	/**
@@ -54,6 +56,9 @@ public class CashRegisterCLI {
 				case "usage":
 					printUsage();
 					break;
+				case "show":
+					out.println(cashRegister.showInventory());
+					break;
 				case "exit":
 				case "quit":
 					out.println("Bye");
@@ -69,6 +74,7 @@ public class CashRegisterCLI {
 	 */
 	private void printUsage() {
 		out.println("Usage: type one of the following commands:");
+		out.println("\tshow - shows cash register inventory");
 		out.println("\tusage - shows usage help");
 		out.println("\tquit - exits the program");
 	}
