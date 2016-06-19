@@ -79,4 +79,34 @@ public class CashRegisterTest {
 		CashRegister register = getCashRegister();
 		register.putMoney(Arrays.asList(new Integer[]{1, 2, 3, 4, -5}));
 	}
+	
+	// Test taking money
+	@Test
+	public void testTakeMoney() throws InsufficientMoneyException {
+		CashRegister register = getCashRegister();
+		register.putMoney(Arrays.asList(new Integer[]{1, 2, 3, 4, 5}));
+		register.takeMoney(Arrays.asList(new Integer[]{1, 2, 3, 4, 5}));
+		assertEquals(0, register.getTotal());
+		assertEquals("$0 0 0 0 0 0", register.showInventory());
+		register = getCashRegisterAltDenominations();
+		register.putMoney(Arrays.asList(new Integer[]{1, 2, 3}));
+		register.takeMoney(Arrays.asList(new Integer[]{1, 2, 3}));
+		assertEquals(0, register.getTotal());
+		assertEquals("$0 0 0 0", register.showInventory());
+	}
+	@Test(expected = IllegalArgumentException.class)
+	public void testTakeMoneyWrongNumber() throws InsufficientMoneyException {
+		CashRegister register = getCashRegister();
+		register.takeMoney(Arrays.asList(new Integer[]{1, 2, 3}));
+	}
+	@Test(expected = IllegalArgumentException.class)
+	public void testTakeMoneyNegative() throws InsufficientMoneyException {
+		CashRegister register = getCashRegister();
+		register.takeMoney(Arrays.asList(new Integer[]{1, 2, 3, 4, -5}));
+	}
+	@Test(expected = InsufficientMoneyException.class)
+	public void testTakeMoneyNotEnough() throws InsufficientMoneyException {
+		CashRegister register = getCashRegister();
+		register.takeMoney(Arrays.asList(new Integer[]{1, 0, 0, 0, 0}));
+	}
 }

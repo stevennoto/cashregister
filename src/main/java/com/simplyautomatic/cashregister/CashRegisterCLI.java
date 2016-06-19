@@ -81,6 +81,10 @@ public class CashRegisterCLI {
 						cashRegister.putMoney(arguments);
 						out.println(cashRegister.showInventory());
 						break;
+					case "take":
+						cashRegister.takeMoney(arguments);
+						out.println(cashRegister.showInventory());
+						break;
 					case "exit":
 					case "quit":
 						out.println("Bye");
@@ -90,6 +94,8 @@ public class CashRegisterCLI {
 				}
 			} catch (IllegalArgumentException e) {
 				out.println("Invalid command. " + e.getMessage());
+			} catch (InsufficientMoneyException e) {
+				out.println("Insufficient money. " + e.getMessage());
 			}
 		}
 	}
@@ -99,8 +105,9 @@ public class CashRegisterCLI {
 	 */
 	private void printUsage() {
 		out.println("Usage: type one of the following commands:");
-		out.println("\tput a b c - puts money in register (a, b, c... are amounts per denomination)");
 		out.println("\tshow - shows cash register inventory");
+		out.println("\tput a b c - puts money in register (a, b, c... are amounts per denomination)");
+		out.println("\ttake a b c - takes money from register (a, b, c... are amounts per denomination)");
 		out.println("\tusage - shows usage help");
 		out.println("\tquit - exits the program");
 	}

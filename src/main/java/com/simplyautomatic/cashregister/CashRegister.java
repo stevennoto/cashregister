@@ -86,20 +86,45 @@ public class CashRegister {
 	 * @throws IllegalArgumentException if input denominations do not match register.
 	 */
 	public void putMoney(List<Integer> amountsToAdd) {
-		// Validate
+		validateAmounts(amountsToAdd);
+		Iterator<Integer> denominationIterator = inventory.keySet().iterator();
+		for (Integer amountToAdd : amountsToAdd) {
+			Integer denomination = denominationIterator.next();
+			inventory.put(denomination, inventory.get(denomination) + amountToAdd);
+		}
+	}
+	
+	/**
+	 * Take money from the cash register
+	 * @param amountsToTake Output money, in descending order by register's denominations.
+	 * @throws IllegalArgumentException if input denominations do not match register.
+	 * @throws InsufficientMoneyException if register has insufficient money.
+	 */
+	public void takeMoney(List<Integer> amountsToTake) throws InsufficientMoneyException {
+		validateAmounts(amountsToTake);
+		Iterator<Integer> denominationIterator = inventory.keySet().iterator();
+		for (Integer amountToTake : amountsToTake) {
+			Integer denomination = denominationIterator.next();
+			if (amountToTake > inventory.get(denomination)) {
+				throw new InsufficientMoneyException("Insufficient money. Not enough " + denomination + "'s.");
+			}
+		}
+		denominationIterator = inventory.keySet().iterator();
+		for (Integer amountToTake : amountsToTake) {
+			Integer denomination = denominationIterator.next();
+			inventory.put(denomination, inventory.get(denomination) - amountToTake);
+		}
+	}
+	
+	// Helper to validate input amounts
+	private void validateAmounts(List<Integer> amountsToAdd) {
 		if (amountsToAdd == null || amountsToAdd.size() != inventory.keySet().size()) {
 			throw new IllegalArgumentException("Number of denominations must match register.");
 		}
 		for (Integer amountToAdd : amountsToAdd) {
 			if (amountToAdd == null || amountToAdd < 0) {
-				throw new IllegalArgumentException("Amount to add must be > 0.");
+				throw new IllegalArgumentException("Amount must be > 0.");
 			}
-		}
-		// Add amounts to inventory
-		Iterator<Integer> denominationIterator = inventory.keySet().iterator();
-		for (Integer amountToAdd : amountsToAdd) {
-			Integer denomination = denominationIterator.next();
-			inventory.put(denomination, inventory.get(denomination) + amountToAdd);
 		}
 	}
 }
