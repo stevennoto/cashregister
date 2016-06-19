@@ -3,6 +3,7 @@ package com.simplyautomatic.cashregister;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -37,7 +38,7 @@ public class CashRegister {
 	
 	/**
 	 * Construct a new cash register, initially empty, with specified denominations.
-	 * @param denominations collection of denominations to include.
+	 * @param denominations Collection of denominations to include.
 	 * @throws IllegalArgumentException if invalid denominations.
 	 */
 	public CashRegister(Collection<Integer> denominations) {
@@ -77,5 +78,28 @@ public class CashRegister {
 			inventoryText += entry.getValue() + " ";
 		}
 		return inventoryText.trim();
+	}
+	
+	/**
+	 * Put money into the cash register
+	 * @param amountsToAdd Input money, in descending order by register's denominations.
+	 * @throws IllegalArgumentException if input denominations do not match register.
+	 */
+	public void putMoney(List<Integer> amountsToAdd) {
+		// Validate
+		if (amountsToAdd == null || amountsToAdd.size() != inventory.keySet().size()) {
+			throw new IllegalArgumentException("Number of denominations must match register.");
+		}
+		for (Integer amountToAdd : amountsToAdd) {
+			if (amountToAdd == null || amountToAdd < 0) {
+				throw new IllegalArgumentException("Amount to add must be > 0.");
+			}
+		}
+		// Add amounts to inventory
+		Iterator<Integer> denominationIterator = inventory.keySet().iterator();
+		for (Integer amountToAdd : amountsToAdd) {
+			Integer denomination = denominationIterator.next();
+			inventory.put(denomination, inventory.get(denomination) + amountToAdd);
+		}
 	}
 }
