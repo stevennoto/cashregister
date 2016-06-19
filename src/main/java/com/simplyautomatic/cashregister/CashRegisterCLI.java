@@ -2,6 +2,8 @@ package com.simplyautomatic.cashregister;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,7 +18,12 @@ public class CashRegisterCLI {
 	private final PrintStream out;
 	private final CashRegister cashRegister;
 	
-	private final static String VALID_COMMAND_REGEX = "([a-zA-Z]+)";
+	/**
+	 * Valid command regex: allows lines like "command", "command 1", "command 1 2 3 4 5".
+	 */
+	private final static String VALID_COMMAND_REGEX = 
+//			"([a-zA-Z]+)(?:\\s+(\\d+)(?:\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+))?)?";
+			"([a-zA-Z]+)((?:\\s+\\d+)*)";
 	
 	/**
 	 * Construct a new Cash Register Command Line Interface
@@ -49,22 +56,40 @@ public class CashRegisterCLI {
 				continue;
 			}
 			
-			// Parse and process command
-			String command = commandMatcher.group(0);
-			switch (command.toLowerCase()) {
-				case "help":
-				case "usage":
-					printUsage();
-					break;
-				case "show":
-					out.println(cashRegister.showInventory());
-					break;
-				case "exit":
-				case "quit":
-					out.println("Bye");
-					return;
-				default:
-					out.println("Invalid command. Type 'usage' for help.");
+			// Parse and process command/arguments
+			String command = commandMatcher.group(1);
+			String argumentsString = commandMatcher.group(2);
+			List<Integer> arguments = new ArrayList<>();
+			if (argumentsString != null) {
+				String[] args = argumentsString.trim().split("\\s+");
+				for (String arg : args) {
+					try {
+						arguments.add(Integer.parseInt(arg));
+					} catch (NumberFormatException e) {}
+				}
+			}
+			try {
+				switch (command.toLowerCase()) {
+					case "help":
+					case "usage":
+						printUsage();
+						break;
+					case "show":
+						out.println(cashRegister.showInventory());
+						break;
+					case "put":
+						cashRegister.putMoney(arguments);
+						out.println(cashRegister.showInventory());
+						break;
+					case "exit":
+					case "quit":
+						out.println("Bye");
+						return;
+					default:
+						out.println("Invalid command. Type 'usage' for help.");
+				}
+			} catch (IllegalArgumentException e) {
+				out.println("Invalid command. " + e.getMessage());
 			}
 		}
 	}
@@ -74,6 +99,7 @@ public class CashRegisterCLI {
 	 */
 	private void printUsage() {
 		out.println("Usage: type one of the following commands:");
+		out.println("\tput a b c - puts money in register (a, b, c... are amounts per denomination)");
 		out.println("\tshow - shows cash register inventory");
 		out.println("\tusage - shows usage help");
 		out.println("\tquit - exits the program");
