@@ -10,8 +10,8 @@ CashRegisterCLI.
 
 Type 'usage' to see available commands. Supported commands include:
 - show - shows cash register inventory.
-- put a b c - puts money in register (a, b, c... are amounts per denomination).
-- take a b c - takes money from register (a, b, c... are amounts per denomination).
+- put x y z - puts money in register (a, b, c... are amounts per denomination).
+- take x y z - takes money from register (a, b, c... are amounts per denomination).
 - usage - shows usage help.
 - quit - exits the program.
 

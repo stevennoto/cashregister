@@ -22,7 +22,6 @@ public class CashRegisterCLI {
 	 * Valid command regex: allows lines like "command", "command 1", "command 1 2 3 4 5".
 	 */
 	private final static String VALID_COMMAND_REGEX = 
-//			"([a-zA-Z]+)(?:\\s+(\\d+)(?:\\s+(\\d+)\\s+(\\d+)\\s+(\\d+)\\s+(\\d+))?)?";
 			"([a-zA-Z]+)((?:\\s+\\d+)*)";
 	
 	/**
@@ -78,10 +77,12 @@ public class CashRegisterCLI {
 						out.println(cashRegister.showInventory());
 						break;
 					case "put":
+					case "add":
 						cashRegister.putMoney(arguments);
 						out.println(cashRegister.showInventory());
 						break;
 					case "take":
+					case "subtract":
 						cashRegister.takeMoney(arguments);
 						out.println(cashRegister.showInventory());
 						break;
@@ -89,6 +90,8 @@ public class CashRegisterCLI {
 					case "quit":
 						out.println("Bye");
 						return;
+					case "zork":
+						out.println("You are standing in an open field west of a white house, with a boarded front door. There is a small mailbox here.");
 					default:
 						out.println("Invalid command. Type 'usage' for help.");
 				}
@@ -106,8 +109,8 @@ public class CashRegisterCLI {
 	private void printUsage() {
 		out.println("Usage: type one of the following commands:");
 		out.println("\tshow - shows cash register inventory");
-		out.println("\tput a b c - puts money in register (a, b, c... are amounts per denomination)");
-		out.println("\ttake a b c - takes money from register (a, b, c... are amounts per denomination)");
+		out.println("\tput x y z - puts money in register (x, y, z... are amounts per denomination)");
+		out.println("\ttake x y z - takes money from register (x, y, z... are amounts per denomination)");
 		out.println("\tusage - shows usage help");
 		out.println("\tquit - exits the program");
 	}
