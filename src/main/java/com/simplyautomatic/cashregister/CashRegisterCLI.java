@@ -86,12 +86,15 @@ public class CashRegisterCLI {
 						cashRegister.takeMoney(arguments);
 						out.println(cashRegister.showInventory());
 						break;
+					case "change":
+						out.println(cashRegister.provideChange(arguments.get(0)));
+						break;
 					case "exit":
 					case "quit":
 						out.println("Bye");
 						return;
 					case "zork":
-						out.println("You are standing in an open field west of a white house, with a boarded front door. There is a small mailbox here.");
+						out.println("You are standing in an open field west of a white house, with a boarded front door.");
 					default:
 						out.println("Invalid command. Type 'usage' for help.");
 				}
@@ -111,6 +114,7 @@ public class CashRegisterCLI {
 		out.println("\tshow - shows cash register inventory");
 		out.println("\tput x y z - puts money in register (x, y, z... are amounts per denomination)");
 		out.println("\ttake x y z - takes money from register (x, y, z... are amounts per denomination)");
+		out.println("\tchange x - shows change necessary to provide x, and takes money from register.");
 		out.println("\tusage - shows usage help");
 		out.println("\tquit - exits the program");
 	}

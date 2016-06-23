@@ -1,5 +1,6 @@
 package com.simplyautomatic.cashregister;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -114,6 +115,79 @@ public class CashRegister {
 			Integer denomination = denominationIterator.next();
 			inventory.put(denomination, inventory.get(denomination) - amountToTake);
 		}
+	}
+	
+	/**
+	 * Provide change from the cash register for specified amount
+	 * @param targetChange Sum to provide change for
+	 * @return description of change to provide
+	 * @throws InsufficientMoneyException if register cannot make change.
+	 */
+	public String provideChange(Integer targetChange) throws InsufficientMoneyException {
+		if (targetChange > getTotal()) {
+			throw new InsufficientMoneyException("Not enough money in register.");
+		}
+		List<Integer> change = provideChangeRecursive(targetChange, inventory.keySet().iterator().next());
+		// Handle failure
+		if (change == null) {
+			throw new InsufficientMoneyException("Not enough money of proper denominations to make change.");
+		}
+		// Pad list length
+		for(int i = change.size(); i < inventory.size(); i++) {
+			change.add(0);
+		}
+		// Deduct from register
+		takeMoney(change);
+		// Print result
+		String changeText = "";
+		for (Integer changeAmount : change) {
+			changeText += changeAmount + " ";
+		}
+		return changeText.trim();
+	}
+	
+	/**
+	 * Determine proper change to provide for target amount. Finds a way to 
+	 * provide change, starting with a greedy large-to-small approach, but 
+	 * recursively explores solutions until one is found (if possible)
+	 * @param targetChange target amount of change to provide
+	 * @param denomination initial/largest denomination to start with
+	 * @return List of change to provide, starting with initial/largest denomination,
+	 * of length required to hold non-zero amounts. Null if change cannot be provided.
+	 */
+	private List<Integer> provideChangeRecursive(Integer targetChange, Integer denomination) {
+		// Calculate max number of this denomination to provide as change:
+		//   maximum of (amount we have), (amount that wouldn't exceed target value)
+		Integer maxAmountCanProvide = inventory.get(denomination);
+		Integer maxAmountShouldProvide = targetChange / denomination; // Note rounds down
+		Integer maxAmountToProvide = Math.min(maxAmountCanProvide, maxAmountShouldProvide);
+		// Greedily try all amounts of denomination, from maxAmountToProvide down to 0
+		for (int curAmountToProvide = maxAmountToProvide; curAmountToProvide >= 0; curAmountToProvide--) {
+			Integer newTargetChange = targetChange - denomination * curAmountToProvide;
+			if (newTargetChange == 0) {
+				// If providing this much exactly meets target, return the amount
+				return new ArrayList<>(Arrays.asList(new Integer[] {curAmountToProvide}));
+			} else {
+				// Else, see if there's a lower denomination
+				Iterator<Integer> denominationIterator = inventory.keySet().iterator();
+				while (!denominationIterator.next().equals(denomination)) { }
+				if (denominationIterator.hasNext()) {
+					// If there's a lower denomination, call recursively with it
+					Integer nextDenomination = denominationIterator.next();
+					List<Integer> subChange = provideChangeRecursive(newTargetChange, nextDenomination);
+					if (subChange != null) {
+						// If sub-call resulted in a solution, add current amount, and return list of amounts
+						subChange.add(0, curAmountToProvide);
+						return subChange;
+					}
+				} else {
+					// If there's no lower denomination, return failure
+					return null;
+				}
+			}
+		}
+		// If no sub-call found a solution, and we didn't, return failure
+		return null;
 	}
 	
 	// Helper to validate input amounts

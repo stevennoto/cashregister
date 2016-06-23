@@ -12,6 +12,7 @@ Type 'usage' to see available commands. Supported commands include:
 - show - shows cash register inventory.
 - put x y z - puts money in register (a, b, c... are amounts per denomination).
 - take x y z - takes money from register (a, b, c... are amounts per denomination).
+- change x - shows change necessary to provide x, and takes money from register.
 - usage - shows usage help.
 - quit - exits the program.
 

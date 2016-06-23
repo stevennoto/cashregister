@@ -109,4 +109,46 @@ public class CashRegisterTest {
 		CashRegister register = getCashRegister();
 		register.takeMoney(Arrays.asList(new Integer[]{1, 0, 0, 0, 0}));
 	}
+	
+	// Test making change
+	@Test
+	public void testProvideChangeSimple() throws InsufficientMoneyException {
+		// Verify basic change
+		CashRegister register = getCashRegister();
+		register.putMoney(Arrays.asList(new Integer[]{1, 2, 3, 4, 5}));
+		String change = register.provideChange(38);
+		assertEquals("1 1 1 1 1", change);
+		assertEquals(30, register.getTotal());
+		assertEquals("$30 0 1 2 3 4", register.showInventory());
+		
+		register = getCashRegisterAltDenominations();
+		register.putMoney(Arrays.asList(new Integer[]{1, 2, 3}));
+		change = register.provideChange(27);
+		assertEquals("1 1 1", change);
+		assertEquals(9, register.getTotal());
+		assertEquals("$9 0 1 2", register.showInventory());
+		
+		// Verify that can give $11 in change as 1 5 and 3 2's
+		register = getCashRegister();
+		register.putMoney(Arrays.asList(new Integer[]{0, 0, 5, 5, 0}));
+		change = register.provideChange(11);
+		assertEquals("0 0 1 3 0", change);
+	}
+	@Test(expected = InsufficientMoneyException.class)
+	public void testProvideChangeNoMoney() throws InsufficientMoneyException {
+		CashRegister register = getCashRegister();
+		register.provideChange(42);
+	}
+	@Test(expected = InsufficientMoneyException.class)
+	public void testProvideChangeNotEnough() throws InsufficientMoneyException {
+		CashRegister register = getCashRegister();
+		register.putMoney(Arrays.asList(new Integer[]{1, 2, 3, 4, 5}));
+		register.provideChange(100);
+	}
+	@Test(expected = InsufficientMoneyException.class)
+	public void testProvideChangeWrongBills() throws InsufficientMoneyException {
+		CashRegister register = getCashRegister();
+		register.putMoney(Arrays.asList(new Integer[]{1, 1, 1, 1, 0}));
+		register.provideChange(11);
+	}
 }
