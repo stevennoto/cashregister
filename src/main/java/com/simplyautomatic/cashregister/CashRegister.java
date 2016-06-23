@@ -107,7 +107,7 @@ public class CashRegister {
 		for (Integer amountToTake : amountsToTake) {
 			Integer denomination = denominationIterator.next();
 			if (amountToTake > inventory.get(denomination)) {
-				throw new InsufficientMoneyException("Insufficient money. Not enough " + denomination + "'s.");
+				throw new InsufficientMoneyException("Not enough " + denomination + "'s.");
 			}
 		}
 		denominationIterator = inventory.keySet().iterator();

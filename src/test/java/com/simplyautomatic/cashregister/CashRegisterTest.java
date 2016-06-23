@@ -9,11 +9,13 @@ import static org.junit.Assert.*;
  * @author stevennoto
  */
 public class CashRegisterTest {
+	// Get a basic default cash register
 	private CashRegister getCashRegister() {
 		CashRegister cashRegister = new CashRegister();
 		return cashRegister;
 	}
 	
+	// Get a cash register that only holds 20's, 5's, and 2's
 	private CashRegister getCashRegisterAltDenominations() {
 		CashRegister cashRegister = new CashRegister(
 				Arrays.asList(new Integer[]{20, 5, 2}));

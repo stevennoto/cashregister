@@ -64,7 +64,7 @@ public class CashRegisterCLI {
 				for (String arg : args) {
 					try {
 						arguments.add(Integer.parseInt(arg));
-					} catch (NumberFormatException e) {}
+					} catch (NumberFormatException e) {} // Won't happen since regex matched only digits
 				}
 			}
 			try {
