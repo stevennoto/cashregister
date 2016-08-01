@@ -95,6 +95,7 @@ public class CashRegisterCLI {
 						return;
 					case "zork":
 						out.println("You are standing in an open field west of a white house, with a boarded front door.");
+						break;
 					default:
 						out.println("Invalid command. Type 'usage' for help.");
 				}
